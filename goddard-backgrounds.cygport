@@ -1,0 +1,40 @@
+NAME="goddard-backgrounds"
+VERSION=13.0.0
+RELEASE=1
+CATEGORY="X11"
+SUMMARY="Fedora 13 desktop wallpaper"
+DESCRIPTION="Default wallpaper for the Fedora 13 release, along with a
+collection of selected wallpapers contributed by the Fedora community."
+HOMEPAGE="https://fedoraproject.org/wiki/Design"
+SRC_URI="https://fedorahosted.org/released/design-team/${NAME}-${VERSION}.tar.lzma"
+
+ARCH=noarch
+
+PKG_NAMES="${NAME}"
+goddard_backgrounds_CONTENTS="
+	usr/share/backgrounds/goddard/default/
+	usr/share/backgrounds/xfce/goddard.*
+	usr/share/gnome-background-properties/desktop-backgrounds-goddard.xml
+	usr/share/mate-background-properties/desktop-backgrounds-goddard.xml
+	usr/share/wallpapers/Goddard/
+	usr/share/doc/${NAME}/
+"
+
+src_compile() {
+	cd ${S}
+	cygmake
+}
+
+src_install() {
+	cd ${S}
+	cyginstall
+	mv ${D}/usr/share/{xfce4/backdrops,backgrounds/xfce}
+
+	dodir /usr/share/mate-background-properties
+	sed -e 's|gnome-wp|mate-wp|' default/desktop-backgrounds-goddard.xml \
+	    > ${D}/usr/share/mate-background-properties/desktop-backgrounds-goddard.xml
+
+	dodir /usr/share/backgrounds/xfce
+	dosym ../../backgrounds/goddard/default/wide/goddard.jpg \
+	      /usr/share/backgrounds/xfce/goddard.jpg
+}
